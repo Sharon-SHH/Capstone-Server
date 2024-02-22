@@ -2,12 +2,14 @@ const express = require("express");
 const router = express();
 const NewsAPI = require("newsapi");
 const KEY = "4876cff98d824fd29a57552fe624f829";
-
-const category = "technology,business";
-
 const newsapi = new NewsAPI(KEY);
+const fs = require("fs");
 
+const KEY_AI = "37140e06-a90e-4a77-943f-f3b29ede3670";
+var erBase = require("eventregistry");
+var er = new erBase.EventRegistry({ apiKey: KEY_AI});
 
+// Get all news
 const newsData = async (req, res)=> {
     await newsapi.v2
       .sources({
@@ -26,6 +28,7 @@ const newsData = async (req, res)=> {
       });
 }
 
+// get a certain category of news
 const fetchNewsData = async (req, res) => {
   const categories = req.params.parameter;
   console.log(req.params);
@@ -34,9 +37,10 @@ const fetchNewsData = async (req, res) => {
     .sources({
       category: categories,
       language: "en",
-      country: "us",
+      country: "us,ca",
     })
     .then((response) => {
+      console.log(response);
       const { sources } = response;
       res.json(sources);
     })
@@ -47,6 +51,32 @@ const fetchNewsData = async (req, res) => {
     });
 };
 
+// Show details of the news
+const detailNews = async (req, res) => {
+  er.getCategoryUri("business")
+     .then((categoryUri) => {
+       var q = new erBase.QueryArticles({
+         categoryUri: categoryUri,
+         isDuplicateFilter: "keepOnlyDuplicates", // possible values are "skipDuplicates" or "keepOnlyDuplicates" or "keepAll";
+       });
+       return er.execQuery(q);
+     })
+     .then((response) => {
+       console.log(response.articles.results);
+      //  const jsonData = JSON.stringify(response.articles.results, null, 2); 
+      //  fs.writeFile("data.json", jsonData, (err) => {
+      //    if (err) {
+      //      console.error("Error writing to file:", err);
+      //      return;
+      //    }
+      //    console.log("Data saved to data.json");
+      //  });
+       res.json(response);
+     });       
+}
+
+
 router.get("/:parameter", fetchNewsData);
-router.get("/", newsData);
+// router.get("/", newsData);
+router.get("/", detailNews);
 module.exports = router;
