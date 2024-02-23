@@ -63,16 +63,28 @@ const detailNews = async (req, res) => {
      })
      .then((response) => {
        console.log(response.articles.results);
-      //  const jsonData = JSON.stringify(response.articles.results, null, 2); 
-      //  fs.writeFile("data.json", jsonData, (err) => {
-      //    if (err) {
-      //      console.error("Error writing to file:", err);
-      //      return;
-      //    }
-      //    console.log("Data saved to data.json");
-      //  });
+       const jsonData = JSON.stringify(response.articles.results, null, 2); 
+       fs.writeFile("data.json", jsonData, (err) => {
+         if (err) {
+           console.error("Error writing to file:", err);
+           return;
+         }
+         console.log("Data saved to data.json");
+       });
        res.json(response);
      });       
+}
+
+const topicData = (req, res) => {
+  const q = new erBase.GetTrendingConcepts({ source: "news", count: 10 });
+  er.execQuery(q).then((response) => {
+    console.info(response);
+    res.json(response).catch((error) => {
+      res.status(500).json({
+        error: `${error}An error occurred while fetching news sources.`,
+      });
+    });
+  });
 }
 
 
