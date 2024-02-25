@@ -1,15 +1,10 @@
 const express = require("express");
 const router = express();
-const knex = require("knex")(require("../knexfile"));
+router.use(express.json());
+const task_controller = require("../controller/tasks_controller");
 
-const getTasks = async (req, res) => {
-    try {
-        const data = await knex("tasks");
-        res.status(200).json(data);
-    } catch (error) {
-        res.status(400).send(`Error: ${error}`);
-    }
-};
-router.get("/", getTasks)
+router.get("/", task_controller.findByStatus);
+router.put("/:id", task_controller.editOne);
+router.post("/", task_controller.addOne);
 
 module.exports = router;
