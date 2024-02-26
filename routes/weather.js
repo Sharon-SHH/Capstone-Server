@@ -8,7 +8,6 @@ const cities = async (req, res) => {
         const input = req.query.search;
         const locationUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${input}&limit=5&appid=${KEY}`;
         const response = await axios.get(locationUrl);
-        console.log(response.data);
         const cityData = response.data;
         if(!cityData) {
             return res.status(400).json({error: "No such city"});
@@ -40,12 +39,10 @@ const weatherData = async (req, res) => {
         const city = req.query.search;
         const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${KEY}`;
         const response = await axios.get(weatherUrl);
-        console.log(`weath: ${response}`);
         const weather = response.data;
         if (!weather) {
             return res.status(400).json({ error: "No such city" });
         }
-        console.log(weather);
         res.status(200).json(weather);
 
     } catch (error) {
