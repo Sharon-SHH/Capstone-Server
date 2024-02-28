@@ -8,15 +8,46 @@ const isValidation = (tasks) => {
     );
 }
 
+const all = async (_req, res) => {
+  try {
+    const data = await knex("tasks");
+     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+     data.forEach((task) => {
+       task.start_date = new Date(task.start_date).toLocaleString("en-US", {
+         timeZone: timezone,
+       });
+       task.end_date = new Date(task.end_date).toLocaleString("en-US", {
+         timeZone: timezone,
+       });
+     });
+     res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ message: `Error getting tasks ${error}` });
+  }
+}
+
 const findByStatus = async (_req, res) => {
     try {
-        const data = await knex.select(`id`, `title`, `note`, `start_date`, `end_date`).from("tasks").where("status", false);
-        if (!data) {
-          return res.status(404).json({
-            message: `There is no reserved task`,
-          });
-        }
-        res.status(200).json(data);
+      const data = await knex
+        .select("id", "title", "note", "start_date", "end_date")
+        .from("tasks")
+        .where("status", false);
+      if (!data) {
+        return res.status(404).json({
+          message: `There is no reserved task`,
+        });
+      }
+      // Convert dates to the desired timezone
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      data.forEach((task) => {
+        task.start_date = new Date(task.start_date).toLocaleString("en-US", {
+          timeZone: timezone,
+        });
+        task.end_date = new Date(task.end_date).toLocaleString("en-US", {
+          timeZone: timezone,
+        });
+      });
+      res.status(200).json(data);
     } catch (error) {
         res.status(500).json({ message: `Error getting tasks ${error}` });
     }
@@ -63,4 +94,5 @@ module.exports = {
   addOne,
   editOne,
   findByStatus,
+  all
 };

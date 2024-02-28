@@ -6,5 +6,6 @@ const task_controller = require("../controller/tasks_controller");
 router.get("/", task_controller.findByStatus);
 router.put("/:id", task_controller.editOne);
 router.post("/", task_controller.addOne);
+router.get("/test", task_controller.all);
 
 module.exports = router;
