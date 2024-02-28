@@ -21,7 +21,7 @@ const cities = async (req, res) => {
         const selectedOptions = cityData
           .map((item) => {
             // when the multiple cities have the same name in the country
-            if (stateCount[item.country] > 1) {
+            if (stateCount[item.country] > 1 && item.state) {
               return `${item.name},${item.state || ""},${item.country}`;
             } else {
               return `${item.name},${item.country}`;
