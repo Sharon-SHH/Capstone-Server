@@ -30,7 +30,7 @@ const cities = async (req, res) => {
         const sortedOptions = selectedOptions.sort();
         res.json(sortedOptions);
     } catch (error) {
-        res.status(500).json({error: `${error}: Server doesn't work`});
+        res.status(500).json({error: `${error}`});
     }
    
 }
@@ -41,12 +41,11 @@ const weatherData = async (req, res) => {
         const response = await axios.get(weatherUrl);
         const weather = response.data;
         if (!weather) {
-            return res.status(400).json({ error: "No such city" });
+          return res.status(400).json({ error: "No such city" });
         }
         res.status(200).json(weather);
-
     } catch (error) {
-        res.status(500).json({ error: `${error}: Server doesn't work` });
+      res.status(500).json({ error: `${error}: Server doesn't work` });
     }
 }
 router.get("/city", cities);
