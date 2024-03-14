@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express();
 const NewsAPI = require("newsapi");
-const KEY = "4876cff98d824fd29a57552fe624f829";
+const KEY = "YourKey";
 const newsapi = new NewsAPI(KEY);
 const fs = require("fs");
 
-const KEY_AI = "37140e06-a90e-4a77-943f-f3b29ede3670";
+const KEY_AI = "YourKey";
 var erBase = require("eventregistry");
 var er = new erBase.EventRegistry({ apiKey: KEY_AI});
 
